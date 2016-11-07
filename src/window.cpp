@@ -6,7 +6,6 @@
 #include <iostream>
 #include <sstream>
 
-#include "key.h"
 #include "window.h"
 
 #define WIN_MAXWIDTH (128)
@@ -25,12 +24,23 @@ void error_callback(int error, const char* description)
 
 namespace piyopiyo
 {
-ppKey ppWindow::key = ppKey();
-void ppWindow::key_callback(GLFWwindow* w, int _key, int scan, int act,
-                            int mods)
+ppEvents ppWindow::events = ppEvents();
+
+void ppWindow::key_callback(GLFWwindow* w, int key, int scan, int act, int mods)
 {
-  if (act == GLFW_PRESS) key.callback(_key, true);
-  if (act == GLFW_RELEASE) key.callback(_key, false);
+  if (act == GLFW_PRESS) {
+    events.push(event(true, false, key));
+  }
+}
+void ppWindow::mouse_callback(GLFWwindow* w, int button, int act, int mods)
+{
+  if (act == GLFW_PRESS) {
+    events.push(event(false, true, button));
+  }
+}
+void ppWindow::scroll_callback(GLFWwindow* w, double xoff, double yoff)
+{
+  events.push(event(xoff, yoff));
 }
 
 ppWindow::ppWindow()
@@ -43,20 +53,6 @@ ppWindow::ppWindow()
   frames = 0;
   scale = WIN_SCALE;
   title = WIN_TITLE;
-
-  // key config
-  key.set(keyType::Up, GLFW_KEY_UP);
-  key.set(keyType::Down, GLFW_KEY_DOWN);
-  key.set(keyType::Left, GLFW_KEY_LEFT);
-  key.set(keyType::Right, GLFW_KEY_RIGHT);
-  key.set(keyType::Start, GLFW_KEY_ENTER);
-  key.set(keyType::Select, GLFW_KEY_SPACE);
-  key.set(keyType::Action, GLFW_KEY_Z);
-  key.set(keyType::Cancel, GLFW_KEY_X);
-  key.set(keyType::Menu, GLFW_KEY_A);
-  key.set(keyType::Info, GLFW_KEY_S);
-  key.set(keyType::Menu_left, GLFW_KEY_Q);
-  key.set(keyType::Menu_right, GLFW_KEY_W);
 }
 
 bool ppWindow::create()
@@ -81,8 +77,10 @@ bool ppWindow::create()
   // make this thread active
   glfwMakeContextCurrent(window);
 
-  // keybord callback
+  // keybord and mouse callback
   glfwSetKeyCallback(window, key_callback);
+  glfwSetMouseButtonCallback(window, mouse_callback);
+  glfwSetScrollCallback(window, scroll_callback);
 
   // swap timing
   glfwSwapInterval(1);
@@ -186,17 +184,7 @@ bool ppWindow::shouldClose()
   return glfwWindowShouldClose(window) != 0 ? true : false;
 }
 
-void ppWindow::swapBuffers()
-{
-  // glColor3f(29.0f / 255.0f, 43.0f / 255.0f, 83.0f / 255.0f);
-  // glBegin(GL_QUADS);
-  // glVertex3s(0, 0, -2);
-  // glVertex3s(0, WIN_HEIGHT, -2);
-  // glVertex3s(WIN_WIDTH, WIN_HEIGHT, -2);
-  // glVertex3s(WIN_WIDTH, 0, -2);
-  // glEnd();
-  glfwSwapBuffers(window);
-}
+void ppWindow::swapBuffers() { glfwSwapBuffers(window); }
 void ppWindow::pollEvents() { glfwPollEvents(); }
 void ppWindow::calcFps()
 {

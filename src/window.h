@@ -5,10 +5,7 @@
 
 #include <GLFW/glfw3.h>
 
-#include "key.h"
-
-#define WIN_MAXWIDTH (128)
-#define WIN_COLOR (16)
+#include "event.h"
 
 namespace piyopiyo
 {
@@ -36,7 +33,9 @@ public:
   void pollEvents();
   void calcFps();
   void setTitle(const char* t) { title = t; };
-  static ppKey key;
+  static ppEvents events;
   static void key_callback(GLFWwindow* w, int key, int scan, int act, int mods);
+  static void mouse_callback(GLFWwindow* w, int button, int act, int mods);
+  static void scroll_callback(GLFWwindow* w, double xoff, double yoff);
 };
 }

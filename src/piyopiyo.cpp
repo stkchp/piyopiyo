@@ -29,18 +29,35 @@ void piyopiyo::loop()
     }
     window.clear();
 
+    // event
+    while (window.events.size() > 0) {
+      auto ev = window.events.front();
+      window.events.pop();
+      std::cout << "event:" << ev.mouse << " " << ev.key << " " << ev.value
+                << " " << ev.x << " " << ev.y << std::endl;
+      if (!ev.mouse && !ev.key) {
+        if (ev.y < 0) {
+          cursor.shift();
+        } else if (ev.y > 0) {
+          cursor.bigger();
+        }
+      }
+    }
+    // cursor move
     if (frame % 4 == 0) {
+      cursor.move(window.cx, window.cy);
       if (ox != window.cx || oy != window.cy) {
         if (0 <= window.cx && window.cx <= window.vwidth) {
           if (0 <= window.cy && window.cy <= window.vheight) {
             std::uint8_t s = std::hypot(window.cx - ox, window.cy - oy);
-            boxes.add(window.cx, window.cy, s);
+            boxes.add(window.cx, window.cy, s, cursor.cr, cursor.cg, cursor.cb);
           }
         }
         ox = window.cx;
         oy = window.cy;
       }
     }
+    cursor.draw();
     boxes.draw();
     boxes.erase();
     window.calcFps();

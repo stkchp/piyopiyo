@@ -5,6 +5,7 @@
 #include <string>
 
 #include "box.h"
+#include "cursor.h"
 #include "window.h"
 
 namespace piyopiyo
@@ -16,6 +17,7 @@ private:
   std::uint64_t frame;
   ppWindow window;
   ppBoxes boxes;
+  ppCursor cursor;
 
   bool init();
   void loop();
