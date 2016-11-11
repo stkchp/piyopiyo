@@ -6,6 +6,7 @@
 
 #include "box.h"
 #include "cursor.h"
+#include "particle.h"
 #include "window.h"
 
 namespace piyopiyo
@@ -18,6 +19,7 @@ private:
   ppWindow window;
   ppBoxes boxes;
   ppCursor cursor;
+  ppParticles particles;
 
   bool init();
   void loop();

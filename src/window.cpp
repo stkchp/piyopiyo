@@ -82,6 +82,9 @@ bool ppWindow::create()
   glfwSetMouseButtonCallback(window, mouse_callback);
   glfwSetScrollCallback(window, scroll_callback);
 
+  // cursor disabled
+  glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+
   // swap timing
   glfwSwapInterval(1);
 

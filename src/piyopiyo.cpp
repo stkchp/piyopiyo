@@ -43,6 +43,10 @@ void piyopiyo::loop()
         }
       }
     }
+    // particle
+    if (frame % 5 == 1) {
+      particles.add(window.cx, window.cy);
+    }
     // cursor move
     if (frame % 4 == 0) {
       cursor.move(window.cx, window.cy);
@@ -57,9 +61,11 @@ void piyopiyo::loop()
         oy = window.cy;
       }
     }
-    cursor.draw();
+    particles.draw();
+    particles.erase();
     boxes.draw();
     boxes.erase();
+    cursor.draw();
     window.calcFps();
     window.swapBuffers();
     window.pollEvents();
